@@ -7,7 +7,7 @@ metadata:
 spec:
   containers:
     - name: frontend-app
-      image: abhilash0104/easy-frontend:latest
+      image: sanket006/devops/frontend:latest
       ports:
         - containerPort: 80
 ---
