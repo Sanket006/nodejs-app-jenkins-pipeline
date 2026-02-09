@@ -1,0 +1,61 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Pull Code') {
+            steps {
+                echo 'Pulling source code from Git repository'
+                git branch: 'devops',
+                url: 'https://github.com/Sanket006/Three-Tier-Using-JenkinsFile.git'
+            }
+        }
+        stage('Build Backend Image') {
+            steps {
+                echo 'Building Backend Image...'
+                sh '''cd backend
+                docker build -t sanket006/easy-backend:latest .'''
+            }
+        }
+
+        stage ('Push Backend Image') {
+            steps {
+                echo 'Pushing Backend Image...'
+                sh '''docker push sanket006/easy-backend:latest
+                docker rmi -f sanket006/easy-backend:latest'''
+            }
+        }
+
+        stage('Build Frontend Image') {
+            steps {
+                echo 'Building Frontend Image...'
+                sh '''cd frontend
+                docker build -t sanket006/easy-frontend:latest .'''
+            }
+        }
+
+        stage ('Push Frontend Image') {
+            steps {
+                echo 'Pushing Frontend Image...'
+                sh '''docker push sanket006/easy-frontend:latest
+                docker rmi -f sanket006/easy-frontend:latest''' 
+            }
+        }
+
+        stage('Configure Kubeconfig') {
+           steps {
+              sh '''
+                aws eks update-kubeconfig --region ap-south-1 --name demo-eks-cluster
+                kubectl get nodes
+                '''
+            }
+       }
+
+        stage('Deploy to kubrnetes') {
+            steps {
+                echo 'Deploying to Kubernetes...'
+                sh '''
+                kubectl apply -f simple-deploy/'''
+            }
+        }
+    }
+}
