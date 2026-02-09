@@ -5,7 +5,7 @@ pipeline {
         stage('Pull Code') {
             steps {
                 echo 'Pulling source code from Git repository'
-                git branch: 'devops',
+                git branch: 'main',
                 url: 'https://github.com/Sanket006/Three-Tier-Using-JenkinsFile.git'
             }
         }
